@@ -21,6 +21,7 @@ RSpec.describe Mutations::Login, type: :request do
             fullName
             token
           }
+          errors
         }
       }
     GQL
@@ -36,19 +37,19 @@ RSpec.describe Mutations::Login, type: :request do
     ).to_h.deep_symbolize_keys[:data][:login]
 
     expect(result[:user]).to match({
-                                     id: user.id.to_s,
-                                     token: user.token,
-                                     fullName: user.full_name,
-                                     userAttributes: {
-                                       email: user.email,
-                                       firstName: user.first_name,
-                                       lastName: user.last_name,
-                                       gender: user.gender,
-                                       country: user.country,
-                                       region: user.region,
-                                       city: user.city
-                                     }
-                                   })
+      id: user.id.to_s,
+      token: user.token,
+      fullName: user.full_name,
+      userAttributes: {
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        gender: user.gender,
+        country: user.country,
+        region: user.region,
+        city: user.city
+      }
+    })
   end
 
   context 'when email is not exist' do
@@ -60,9 +61,9 @@ RSpec.describe Mutations::Login, type: :request do
       result = GraphqlSchema.execute(
         query,
         variables: { input: variables }
-      ).to_h.deep_symbolize_keys[:data][:errors]
+      ).to_h.deep_symbolize_keys[:data][:login]
 
-      expect(result.count).to eq(1)
+      expect(result[:errors].count).to eq(1)
     end
   end
 
@@ -75,9 +76,9 @@ RSpec.describe Mutations::Login, type: :request do
       result = GraphqlSchema.execute(
         query,
         variables: { input: variables }
-      ).to_h.deep_symbolize_keys[:data][:errors]
+      ).to_h.deep_symbolize_keys[:data][:login]
 
-      expect(result.count).to eq(1)
+      expect(result[:errors].count).to eq(1)
     end
   end
 end
