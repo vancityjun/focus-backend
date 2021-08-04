@@ -6,9 +6,6 @@ module Types
 
     # Add root-level fields here.
     # They will be entry points for queries on your schema.
-    field :current_user, UserType, null: true
-    def current_user
-      context[:current_user]
-    end
+    field :current_user, resolver: Resolvers::CurrentUser
   end
 end

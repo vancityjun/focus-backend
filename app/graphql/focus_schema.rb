@@ -1,4 +1,4 @@
-class GraphqlSchema < GraphQL::Schema
+class FocusSchema < GraphQL::Schema
   mutation(Types::MutationType)
   query(Types::QueryType)
 

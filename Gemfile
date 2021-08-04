@@ -25,7 +25,11 @@ gem 'rack-cors'
 
 gem 'attr_encrypted', '~> 3.1.0'
 gem 'graphql'
+
+# Use common authentication
 gem 'jwt'
+gem 'sorcery'
+
 gem 'rspec'
 
 group :development, :test do
@@ -43,6 +47,14 @@ group :development do
   gem 'better_errors'
   gem 'graphiql-rails'
   gem 'spring'
+  gem 'guard-rspec'
+  gem 'guard-spring'
+  gem 'spring-commands-rspec'
+end
+
+group :test do
+  gem 'shoulda-matchers', '<= 4.0.1'
+  gem 'database_cleaner'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
