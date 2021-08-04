@@ -7,6 +7,6 @@ module Resolvers
 
     def resolve(_params)
       current_user
-		end
-	end
+    end
+  end
 end

@@ -50,6 +50,10 @@ group :development do
   gem 'guard-rspec'
   gem 'guard-spring'
   gem 'spring-commands-rspec'
+  gem 'rubocop'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
+  gem 'rubocop-performance'
 end
 
 group :test do
