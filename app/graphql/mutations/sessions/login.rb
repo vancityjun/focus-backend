@@ -3,7 +3,6 @@ module Mutations
     class Login < Mutations::BaseMutation
       graphql_name 'LoginUser'
 
-
       argument :email, String, required: true
       argument :password, String, required: true
 
@@ -15,7 +14,6 @@ module Mutations
         
         if user
           token = Jwt::TokenGenerator.issue_token user.for_token
-
           { token: token, errors: [] }
         else
           invalid_response
