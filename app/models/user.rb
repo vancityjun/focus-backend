@@ -5,7 +5,6 @@ class User < ApplicationRecord
   
   validates :email, uniqueness: { case_sensitive: false }
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
-
   validates :password, length: { minimum: 8 }, if: -> { new_record? || changes[:crypted_password] }
   validates :password, confirmation: true , if: -> { new_record? || changes[:crypted_password] }
 

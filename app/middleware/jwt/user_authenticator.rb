@@ -1,18 +1,17 @@
 class Jwt::UserAuthenticator
-	class << self
-		def validate(request_headers)
-			@request_headers = request_headers
+  class << self
+    def validate(request_headers)
+      @request_headers = request_headers
 
-			payload, _header = Jwt::TokenDecryptor.decrypt(token)
-			User.find(payload['user_id'])
+      payload, _header = Jwt::TokenDecryptor.decrypt(token)
+      User.find(payload['user_id'])
+    rescue InvalidTokenError
+    end
 
-		rescue InvalidTokenError
-		end
+    def token
+      return unless @request_headers['Authorization']
 
-		def token
-			return unless @request_headers['Authorization']
-
-			@request_headers['Authorization'].split(' ').last
-		end
-	end
+      @request_headers['Authorization'].split(' ').last
+    end
+  end
 end

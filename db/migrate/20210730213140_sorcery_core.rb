@@ -1,6 +1,6 @@
 class SorceryCore < ActiveRecord::Migration[6.1]
   def change
-  	drop_table(:users, if_exists: true)
+    drop_table(:users, if_exists: true)
 
     create_table :users do |t|
       t.string :email, null: false

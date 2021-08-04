@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Mutations::Users::Signup, type: :request do
-  let!(:variables) do 
+  let!(:variables) do
     {
       password: '123456789',
       userAttributes: {
@@ -16,7 +16,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
     }
   end
 
-	let!(:signup_query) do
+  let!(:signup_query) do
     <<-GQL
       mutation signup ($input: SignupInput!) {
         signup (input: $input){
@@ -28,7 +28,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
   end
 
   describe 'signup' do
-  	it 'with valid signup info' do
+    it 'with valid signup info' do
       response = excute_and_parse_graphql_response query: signup_query, variables: variables
       expect(response['signup']).to match(
         token: kind_of(String),
@@ -66,4 +66,4 @@ RSpec.describe Mutations::Users::Signup, type: :request do
       end
     end
   end
- end
+end
