@@ -29,7 +29,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
 
   describe 'signup' do
     it 'with valid signup info' do
-      response = excute_and_parse_graphql_response query: signup_query, variables: variables
+      response = execute_and_parse_graphql_response query: signup_query, variables: variables
       expect(response['signup']).to match(
         token: kind_of(String),
         errors: []
@@ -50,7 +50,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
 
     context 'with invalid signup info' do
       it 'shorten password length' do
-        response = excute_and_parse_graphql_response query: signup_query, variables: variables.merge(password: '1234')
+        response = execute_and_parse_graphql_response query: signup_query, variables: variables.merge(password: '1234')
         expect(response['signup']).to match(
           token: 'Invalid',
           errors: ['Password is too short (minimum is 8 characters)']
@@ -58,7 +58,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
       end
 
       it 'empty name value' do
-        response = excute_and_parse_graphql_response query: signup_query, variables: variables.deep_merge(userAttributes: { firstName: '' })
+        response = execute_and_parse_graphql_response query: signup_query, variables: variables.deep_merge(userAttributes: { firstName: '' })
         expect(response['signup']).to match(
           token: 'Invalid',
           errors: ["First name can't be blank"]

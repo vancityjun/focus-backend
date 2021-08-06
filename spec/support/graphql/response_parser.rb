@@ -1,6 +1,6 @@
 module GraphQL
   module ResponseParser
-    def excute_and_parse_graphql_response(query:, variables:)
+    def execute_and_parse_graphql_response(query:, variables:)
       result = FocusSchema.execute(
         query,
         variables: { input: variables }
