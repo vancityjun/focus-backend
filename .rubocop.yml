@@ -1,0 +1,320 @@
+# For more cops go here https://raw.githubusercontent.com/rubocop-hq/rubocop/master/config/default.yml
+# To install rubocop as git hook run "git config core.hooksPath .githooks"
+
+require:
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+
+AllCops:
+  RubyInterpreters:
+    - ruby
+  Include:
+    - '**/*.rb'
+    - '**/*.arb'
+    - '**/*.axlsx'
+    - '**/*.builder'
+    - '**/*.fcgi'
+    - '**/*.gemfile'
+    - '**/*.gemspec'
+    - '**/*.god'
+    - '**/*.jb'
+    - '**/*.jbuilder'
+    - '**/*.mspec'
+    - '**/*.opal'
+    - '**/*.pluginspec'
+    - '**/*.podspec'
+    - '**/*.rabl'
+    - '**/*.rake'
+    - '**/*.rbuild'
+    - '**/*.rbw'
+    - '**/*.rbx'
+    - '**/*.ru'
+    - '**/*.ruby'
+    - '**/*.spec'
+    - '**/*.thor'
+    - '**/*.watchr'
+    - '**/.irbrc'
+    - '**/.pryrc'
+    - '**/buildfile'
+    - '**/Appraisals'
+    - '**/Berksfile'
+    - '**/Brewfile'
+    - '**/Buildfile'
+    - '**/Capfile'
+    - '**/Cheffile'
+    - '**/Dangerfile'
+    - '**/Deliverfile'
+    - '**/Fastfile'
+    - '**/*Fastfile'
+    - '**/Gemfile'
+    - '**/Guardfile'
+    - '**/Jarfile'
+    - '**/Mavenfile'
+    - '**/Podfile'
+    - '**/Puppetfile'
+    - '**/Rakefile'
+    - '**/Snapfile'
+    - '**/Thorfile'
+    - '**/Vagabondfile'
+    - '**/Vagrantfile'
+  Exclude:
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - '.git/**/*'
+    - 'tmp/**/*'
+    - 'db/schema.rb'
+
+  RSpec/FactoryBot:
+    Patterns:
+      - spec/factories.rb
+      - spec/factories/**/*.rb
+      - features/support/factories/**/*.rb
+
+  DefaultFormatter: progress
+  DisplayCopNames: true
+  DisplayStyleGuide: false
+  StyleGuideBaseURL: https://rubystyle.guide
+  ExtraDetails: false
+  StyleGuideCopsOnly: false
+  DisabledByDefault: true
+  UseCache: true
+  MaxFilesInCache: 20000
+  CacheRootDirectory: tmp/rubocop
+  AllowSymlinksInCacheRootDirectory: false
+  TargetRubyVersion: 2.6.6
+
+# Use `foo {}` not `foo{}`.
+Layout/SpaceBeforeBlockBraces:
+  Enabled: true
+
+# Use `foo { bar }` not `foo {bar}`.
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+  EnforcedStyleForEmptyBraces: space
+# Use `{ a: 1 }` not `{a:1}`.
+Layout/SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+# Check quotes usage according to lint rule below.
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+# Detect hard tabs, no hard tabs.
+Layout/IndentationStyle:
+  Enabled: true
+
+# Blank lines should not have any spaces.
+Layout/TrailingEmptyLines:
+  Enabled: true
+
+# No trailing whitespace.
+Layout/TrailingWhitespace:
+  Enabled: true
+
+Layout/AccessModifierIndentation:
+  Enabled: true
+  EnforcedStyle: outdent
+
+Layout/CaseIndentation:
+  Enabled: true
+
+Layout/ElseAlignment:
+  Enabled: true
+
+Layout/EndAlignment:
+  Enabled: true
+  AutoCorrect: true
+  EnforcedStyleAlignWith: variable
+
+Layout/AssignmentIndentation:
+  Enabled: true
+  IndentationWidth: 2
+
+Layout/FirstArrayElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+
+Layout/IndentationConsistency:
+  Enabled: true
+
+Layout/InitialIndentation:
+  Enabled: true
+
+Layout/LeadingEmptyLines:
+  Enabled: true
+
+Layout/MultilineAssignmentLayout:
+  Enabled: true
+
+Layout/MultilineBlockLayout:
+  Enabled: true
+
+Layout/MultilineHashKeyLineBreaks:
+  Enabled: true
+
+Layout/RescueEnsureAlignment:
+  Enabled: true
+
+Layout/SpaceAfterColon:
+  Enabled: true
+
+Layout/SpaceAfterComma:
+  Enabled: true
+
+Layout/SpaceAfterMethodName:
+  Enabled: true
+
+Layout/SpaceAfterNot:
+  Enabled: true
+
+Layout/SpaceAfterSemicolon:
+  Enabled: true
+
+Layout/SpaceAroundBlockParameters:
+  Enabled: true
+
+Layout/SpaceAroundKeyword:
+  Enabled: true
+
+Layout/SpaceAroundOperators:
+  Enabled: true
+
+Layout/SpaceBeforeComma:
+  Enabled: true
+
+Layout/SpaceBeforeComment:
+  Enabled: true
+
+Layout/SpaceBeforeSemicolon:
+  Enabled: true
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+  EnforcedStyle: no_space
+
+Layout/SpaceInsideStringInterpolation:
+  Enabled: true
+  EnforcedStyle: no_space
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/EmptyLinesAroundAccessModifier:
+  Enabled: true
+
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: true
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: true
+
+Layout/BlockAlignment:
+  Enabled: true
+
+Layout/BlockEndNewline:
+  Enabled: true
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
+
+Layout/ConditionPosition:
+  Enabled: true
+
+Layout/DefEndAlignment:
+  Enabled: true
+  AutoCorrect: true
+
+Layout/DotPosition:
+  Enabled: true
+  EnforcedStyle: trailing
+
+Layout/EmptyComment:
+  Enabled: true
+
+Layout/EmptyLineAfterMagicComment:
+  Enabled: true
+
+Layout/ExtraSpacing:
+  Enabled: true
+
+Layout/IndentationWidth:
+  Enabled: true
+  Width: 2
+  IgnoredPatterns: ['^\s*module', '^\s*class', '^\s*private', '^\s*protected', '^\s*public']
+
+Layout/LeadingCommentSpace:
+  Enabled: true
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+  EnforcedStyle: space
+
+Layout/SpaceInsideParens:
+  Enabled: true
+  EnforcedStyle: no_space
+
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: true
+
+Layout/SpaceInsideRangeLiteral:
+  Enabled: true
+
+Layout/SpaceInsideReferenceBrackets:
+  Enabled: true
+
+Layout/HashAlignment:
+  Enabled: true
+  EnforcedHashRocketStyle: key
+  EnforcedLastArgumentHashStyle: ignore_implicit
+
+Rails/EnvironmentComparison:
+  Enabled: true
+
+Rails/FindEach:
+  Enabled: true
+
+Rails/Presence:
+  Enabled: true
+
+Rails/TimeZone:
+  Enabled: true
+
+Style/BlockDelimiters:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+
+Style/HashSyntax:
+  Enabled: true
+
+Style/DefWithParentheses:
+  Enabled: true
+
+Style/MethodCallWithoutArgsParentheses:
+  Enabled: true
+
+Style/MethodDefParentheses:
+  Enabled: true
+
+Style/NilComparison:
+  Enabled: true
+
+Style/Proc:
+  Enabled: true
+
+Style/RedundantBegin:
+  Enabled: true
+
+Style/RedundantReturn:
+  Enabled: true
+
+Style/UnlessElse:
+  Enabled: true
+
+FactoryBot/AttributeDefinedStatically:
+  Enabled: true

@@ -1,17 +1,24 @@
 class User < ApplicationRecord
-  validates :email, :password, :first_name, :last_name, presence: true
-  validates :email, uniqueness: true
-
-  attr_encrypted :password, key: '11111111111111111111111111111111'
+  authenticates_with_sorcery!
+  
+  validates_presence_of :email, :password, :first_name, :last_name
+  
+  validates :email, uniqueness: { case_sensitive: false }
+  validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :password, length: { minimum: 8 }, if: -> { new_record? || changes[:crypted_password] }
+  validates :password, confirmation: true , if: -> { new_record? || changes[:crypted_password] }
 
   before_save :lowercase_email, if: :email =~ /[A-Z]/
 
-  def token
-    JWT.encode(id.to_s, nil, 'none')
-  end
-
   def full_name
     "#{first_name} #{last_name}"
+  end
+
+  def for_token
+    {
+      user_id: id,
+      user_name: full_name
+    }
   end
 
   private

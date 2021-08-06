@@ -1,6 +1,6 @@
 module Types
   class MutationType < Types::BaseObject
-    field :register, mutation: Mutations::Register
-    field :login, mutation: Mutations::Login
+    field :signup, mutation: Mutations::Users::Signup
+    field :login, mutation: Mutations::Sessions::Login
   end
 end
