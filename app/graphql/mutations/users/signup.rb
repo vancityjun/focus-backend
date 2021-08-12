@@ -2,7 +2,7 @@ module Mutations
   module Users
     class Signup < Mutations::BaseMutation
       argument :password, String, required: true
-      argument :user_attributes, Types::UserAttributes, required: false
+      argument :user_attributes, Types::Users::UserInput, required: false
 
       field :errors, [String], null: true
       field :token, String, null: true
