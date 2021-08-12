@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe Mutations::Users::Signup, type: :request do
   let!(:variables) do
     {
-      password: '123456789',
       userAttributes: {
         email: 'vince@example.com',
+        password: '123456789',
         firstName: 'Vince',
         lastName: 'Yoon',
         gender: 'male',
@@ -50,7 +50,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
 
     context 'with invalid signup info' do
       it 'shorten password length' do
-        response = execute_and_parse_graphql_response query: signup_query, variables: variables.merge(password: '1234')
+        response = execute_and_parse_graphql_response query: signup_query, variables: variables.deep_merge(userAttributes: { password: '123' })
         expect(response['signup']).to match(
           token: 'Invalid',
           errors: ['Password is too short (minimum is 8 characters)']
