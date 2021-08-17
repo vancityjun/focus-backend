@@ -1,7 +1,10 @@
 class User < ApplicationRecord
+  include Archivable
+
   authenticates_with_sorcery!
   
-  validates_presence_of :email, :password, :first_name, :last_name
+  validates_presence_of :email, :first_name, :last_name
+  validates_presence_of :password, if: :password_required?
   
   validates :email, uniqueness: { case_sensitive: false }
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
@@ -17,7 +20,7 @@ class User < ApplicationRecord
   def for_token
     {
       user_id: id,
-      user_name: full_name
+      user_email: email
     }
   end
 
@@ -25,5 +28,9 @@ class User < ApplicationRecord
 
   def lowercase_email
     self.email = email.downcase
+  end
+
+  def password_required?
+    !persisted? || !password.nil?
   end
 end

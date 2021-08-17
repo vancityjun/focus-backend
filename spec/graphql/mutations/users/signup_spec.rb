@@ -18,7 +18,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
 
   let!(:signup_query) do
     <<-GQL
-      mutation signup ($input: SignupInput!) {
+      mutation signup ($input: SignupUserInput!) {
         signup (input: $input){
           token
           errors

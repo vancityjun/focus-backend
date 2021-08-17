@@ -14,11 +14,12 @@ ActiveRecord::Migration.maintain_test_schema!
 
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
-include GraphQL::ResponseParser
-include GraphQL::TokenGenerator
-
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
+  config.include GraphQL::ResponseParser
+  config.include GraphQL::TokenGenerator
+  config.include Support::Helpers::RailsSpecHelpers
+  
   config.use_transactional_fixtures = true
 
   config.before :suite do
