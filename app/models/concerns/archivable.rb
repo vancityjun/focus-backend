@@ -5,7 +5,7 @@ module Archivable
     define_model_callbacks :archive, :unarchive
 
     scope :archived, -> { where(archived: true)}
-    scope :active, -> { where("#{self.table_name}.archived IS NULL OR #{self.table_name}.archived = false") }
+    scope :active, -> { where("#{self.table_name}.archived IS NULL OR #{self.table_name}.archived IS false") }
   end
 
   def active?

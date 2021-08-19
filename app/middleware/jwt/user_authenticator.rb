@@ -4,10 +4,7 @@ class Jwt::UserAuthenticator
       @request_headers = request_headers
 
       payload, _header = Jwt::TokenDecryptor.decrypt(token)
-      user = User.find(payload['user_id'])
-      return nil if user.archived?
-      
-      user
+      User.active.find_by(id: payload['user_id'])
     rescue InvalidTokenError
     end
 
