@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Mutations::Sessions::Login, type: :request do
+RSpec.describe Mutations::Users::Login, type: :request do
   let!(:user) { create :user }
   let!(:variables) do
     {
@@ -33,16 +33,16 @@ RSpec.describe Mutations::Sessions::Login, type: :request do
       it 'with invalid email' do
         response = execute_and_parse_graphql_response query: login_query, variables: variables.merge(email: 'invalid@example.com')
         expect(response['login']).to match(
-          token: 'Invalid',
-          errors: ['Invalid email or password']
+          token: nil,
+          errors: ['Invalid email or password.']
         )
       end
 
       it 'with invalid password' do
         response = execute_and_parse_graphql_response query: login_query, variables: variables.merge(password: '87654321')
         expect(response['login']).to match(
-          token: 'Invalid',
-          errors: ['Invalid email or password']
+          token: nil,
+          errors: ['Invalid email or password.']
         )
       end
     end

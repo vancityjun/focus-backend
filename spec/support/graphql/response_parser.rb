@@ -5,7 +5,6 @@ module GraphQL
         query,
         variables: { input: variables }
       )
-
       result.to_h.delete('data').with_indifferent_access
     end
 

@@ -4,7 +4,7 @@ class Jwt::UserAuthenticator
       @request_headers = request_headers
 
       payload, _header = Jwt::TokenDecryptor.decrypt(token)
-      User.find(payload['user_id'])
+      User.active.find_by(id: payload['user_id'])
     rescue InvalidTokenError
     end
 

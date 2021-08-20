@@ -21,7 +21,7 @@ RSpec.describe User, type: :model do
     let!(:token) do
       {
         user_id: subject.id,
-        user_name: subject.full_name
+        user_email: subject.email
       }
     end
 

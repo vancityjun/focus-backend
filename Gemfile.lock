@@ -281,6 +281,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     thor (1.1.0)
+    timecop (0.9.4)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.0.0)
@@ -322,6 +323,7 @@ DEPENDENCIES
   sorcery
   spring
   spring-commands-rspec
+  timecop
   tzinfo-data
 
 RUBY VERSION
