@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Mutations::Sessions::Login, type: :request do
+RSpec.describe Mutations::Users::Login, type: :request do
   let!(:user) { create :user }
   let!(:variables) do
     {

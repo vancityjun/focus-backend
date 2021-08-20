@@ -24,7 +24,7 @@ class User < ApplicationRecord
     }
   end
 
-  private
+private
 
   def lowercase_email
     self.email = email.downcase

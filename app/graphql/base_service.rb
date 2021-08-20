@@ -9,7 +9,7 @@ class BaseService
   end
 
   def self.call(resource, method, options)
-    service = "#{resource.to_s.pluralize.camelize}::Service"
+    service = "Services::#{resource.to_s.pluralize.camelize}Service"
     service.constantize.new(
       params: options[:params],
       user: options[:current_user],
@@ -28,6 +28,6 @@ private
   end
 
   def resource_name
-    self.class.to_s.split(':').first.underscore
+    self.class.to_s.split(':').last.gsub('Service','').underscore
   end
 end
