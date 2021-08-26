@@ -37,7 +37,7 @@ RSpec.describe Mutations::Users::Delete, type: :request do
 
       parsed_response = parse_response response.body
       expect(parsed_response['deleteUser']).to match(
-        status: 'Success deleting user',
+        status: 'Success to Delete User',
         errors: []
       )
 
@@ -60,15 +60,6 @@ RSpec.describe Mutations::Users::Delete, type: :request do
 
     it 'returns errors when token is invalid' do
       post '/graphql', params: { query: delete_user_query, variables: variables }, headers: { 'Authorization' => "Bearer Invalid" }
-      parsed_response = parse_response response.body
-      expect(parsed_response['deleteUser']).to match(
-        status: nil,
-        errors: ['Invalid user']
-      )
-    end
-
-    it 'returns errors when user_id is invalid' do
-      post '/graphql', params: { query: delete_user_query, variables: variables.deep_merge(input: { id: '100' }) }, headers: { 'Authorization' => "Bearer #{token}" }
       parsed_response = parse_response response.body
       expect(parsed_response['deleteUser']).to match(
         status: nil,

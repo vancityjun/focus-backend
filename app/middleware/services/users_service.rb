@@ -21,7 +21,7 @@ module Services
 
     def delete
       if object.archive
-        { status: 'Success deleting user', errors: [] }
+        { status: 'Success to Delete User', errors: [] }
       else
         { status: nil, errors: object.errors.full_messages }
       end

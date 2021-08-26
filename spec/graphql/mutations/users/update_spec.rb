@@ -106,14 +106,5 @@ RSpec.describe Mutations::Users::Update, type: :request do
         errors: ['Invalid user']
       )
     end
-
-    it 'returns errors when user_id is invalid' do
-      post '/graphql', params: { query: update_user_query, variables: variables.deep_merge(input: { id: '100' }) }, headers: { 'Authorization' => "Bearer #{token}" }
-      parsed_response = parse_response response.body
-      expect(parsed_response['updateUser']).to match(
-        user: nil,
-        errors: ['Invalid user']
-      )
-    end
   end
 end
