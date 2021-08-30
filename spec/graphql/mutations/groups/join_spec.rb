@@ -8,9 +8,7 @@ RSpec.describe Mutations::Groups::Join, type: :request do
 
   let!(:variables) do
     {
-      input: {
-        id: group.id.to_s
-      }
+      id: group.id.to_s
     }
   end
     
@@ -27,29 +25,28 @@ RSpec.describe Mutations::Groups::Join, type: :request do
 
   it 'joins the group' do
     expect do
-      post '/graphql', params: { query: join_group_query, variables: variables.to_json }, headers: { 'Authorization' => "Bearer #{attendee_token}" }
-    end.
-      to change(attendee.attenables, :count).by(1)
-    
-    expect(response.status).to eq(200)
+        execute_and_parse_graphql_response query: join_group_query, variables: variables, current_user: attendee
+      end.
+        to change(attendee.attenables, :count).by(1)
 
-    parsed_response = parse_response response.body
-    expect(parsed_response['joinGroup']).to match(
+    expect(parse_graphql_response['joinGroup']).to match(
       status: "Success to Join the #{group.name}",
       errors: []
     )
+
+    attenable = Attendee.order(:id).last
+    expect(attenable.attendee).to eq attendee
   end
 
   it 'returns errors when attendee already joined the group' do
     create :attendee, attendee: attendee, resource: group
 
     expect do
-      post '/graphql', params: { query: join_group_query, variables: variables.to_json }, headers: { 'Authorization' => "Bearer #{attendee_token}" }
-    end.
-      to change(attendee.attenables, :count).by(0)
+        execute_and_parse_graphql_response query: join_group_query, variables: variables, current_user: attendee
+      end.
+        to change(attendee.attenables, :count).by(0)
 
-    parsed_response = parse_response response.body
-    expect(parsed_response['joinGroup']).to match(
+    expect(parse_graphql_response['joinGroup']).to match(
       status: nil,
       errors: ['Already Join the Group']
     )

@@ -7,9 +7,7 @@ RSpec.describe Mutations::Groups::Delete, type: :request do
 
   let!(:variables) do
     {
-      input: {
-        id: group.id.to_s
-      }
+      id: group.id.to_s
     }
   end
     
@@ -27,24 +25,19 @@ RSpec.describe Mutations::Groups::Delete, type: :request do
   describe 'with valid variables' do
     it 'archives the group' do
       expect do
-        post '/graphql', params: { query: delete_group_query, variables: variables.to_json }, headers: { 'Authorization' => "Bearer #{token}" }
+        execute_and_parse_graphql_response query: delete_group_query, variables: variables, current_user: user
       end.
         to change(user.groups, :count).by(0).
-        and change(Attendee, :count).by(-1)
-      
-      expect(response.status).to eq(200)
+        and change(Attendee, :count).by(0)
 
-      parsed_response = parse_response response.body
-      expect(parsed_response['deleteGroup']).to match(
-        status: 'Success to Delete Group',
-        errors: []
-      )
+      attenable = Attendee.order(:id).last
+      expect(attenable.attendee).to eq user
     end
   end
 
   describe 'with invalid variables' do
     it 'returns errors when token does not existed' do
-      post '/graphql', params: { query: delete_group_query, variables: variables.to_json }
+      post '/graphql', params: { query: delete_group_query, variables: { input: variables }.to_json }
       parsed_response = parse_response response.body
       expect(parsed_response['deleteGroup']).to match(
         status: nil,

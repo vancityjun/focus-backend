@@ -1,11 +1,15 @@
 module GraphQL
   module ResponseParser
-    def execute_and_parse_graphql_response(query:, variables:)
+
+    attr_accessor :parse_graphql_response
+
+    def execute_and_parse_graphql_response(query:, variables:, current_user: nil)
       result = FocusSchema.execute(
         query,
-        variables: { input: variables }
+        variables: { input: variables },
+        context: { current_user: current_user }
       )
-      result.to_h.delete('data').with_indifferent_access
+      @parse_graphql_response = result.to_h.delete('data').with_indifferent_access
     end
 
     def parse_response(original_response)

@@ -8,9 +8,7 @@ RSpec.describe Mutations::Groups::Leave, type: :request do
 
   let!(:variables) do
     {
-      input: {
-        id: group.id.to_s
-      }
+      id: group.id.to_s
     }
   end
     
@@ -29,14 +27,11 @@ RSpec.describe Mutations::Groups::Leave, type: :request do
     create :attendee, attendee: attendee, resource: group
 
     expect do
-      post '/graphql', params: { query: leave_group_query, variables: variables.to_json }, headers: { 'Authorization' => "Bearer #{attendee_token}" }
-    end.
-      to change(attendee.attenables, :count).by(-1)
-    
-    expect(response.status).to eq(200)
+        execute_and_parse_graphql_response query: leave_group_query, variables: variables, current_user: attendee
+      end.
+        to change(attendee.attenables, :count).by(-1)
 
-    parsed_response = parse_response response.body
-    expect(parsed_response['leaveGroup']).to match(
+    expect(parse_graphql_response['leaveGroup']).to match(
       status: "Success to Leave the #{group.name}",
       errors: []
     )
@@ -44,12 +39,11 @@ RSpec.describe Mutations::Groups::Leave, type: :request do
 
   it 'returns errors when attendee does not in the group' do
     expect do
-      post '/graphql', params: { query: leave_group_query, variables: variables.to_json }, headers: { 'Authorization' => "Bearer #{attendee_token}" }
-    end.
-      to change(attendee.attenables, :count).by(0)
+        execute_and_parse_graphql_response query: leave_group_query, variables: variables, current_user: attendee
+      end.
+        to change(attendee.attenables, :count).by(0)
 
-    parsed_response = parse_response response.body
-    expect(parsed_response['leaveGroup']).to match(
+    expect(parse_graphql_response['leaveGroup']).to match(
       status: nil,
       errors: ['No record for attendee']
     )

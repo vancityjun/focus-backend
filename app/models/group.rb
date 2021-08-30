@@ -10,19 +10,10 @@ class Group < ApplicationRecord
   scope :find_public, -> { where(private: false)}
 
   after_create :add_attendee
-  after_archive :destroy_attenables
 
 private
   def add_attendee
     attendee = Attendee.new resource: self, attendee: owner
     attendee.save
-  end
-
-  def destroy_attenables
-    return if archived == false
-    
-    attenables.each do |attenable|
-      attenable.destroy!
-    end
   end
 end
