@@ -12,19 +12,27 @@ module Services
     end
 
     def update
-      if object.update params
-        { user: object, errors: [] }
+      user = model.find(model_id)
+      if user.update params
+        { user: user, errors: [] }
       else
-        { user: nil, errors: object.errors.full_messages }
+        { user: nil, errors: user.errors.full_messages }
       end
+
+    rescue ActiveRecord::RecordNotFound => error
+      { user: nil, errors: [error.message] }
     end
 
     def delete
-      if object.archive
+      user = model.find(model_id)
+      if user.archive
         { status: 'Success to Delete User', errors: [] }
       else
-        { status: nil, errors: object.errors.full_messages }
+        { status: nil, errors: user.errors.full_messages }
       end
+      
+    rescue ActiveRecord::RecordNotFound => error
+      { status: nil, errors: [error.message] }
     end
 
     def login

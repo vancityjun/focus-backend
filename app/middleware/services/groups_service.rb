@@ -19,39 +19,55 @@ module Services
     end
 
     def update
-      if object.update params
-        { group: object, errors: [] }
+      group = model.find(model_id)
+      if group.update params
+        { group: group, errors: [] }
       else
-        { group: nil, errors: object.errors.full_messages }
+        { group: nil, errors: group.errors.full_messages }
       end
+
+    rescue ActiveRecord::RecordNotFound => error
+      { group: nil, errors: [error.message] }
     end
 
     def delete
-      if object.archive
+      group = model.find(model_id)
+      if group.archive
         { status: "Success to Delete Group", errors: [] }
       else
-        { status: nil, errors: object.errors.full_messages }
+        { status: nil, errors: group.errors.full_messages }
       end
+
+    rescue ActiveRecord::RecordNotFound => error
+      { status: nil, errors: [error.message] }
     end
 
     def join
-      attendee = object.attenables.new attendee: user
+      group = model.find(model_id)
+      attendee = group.attenables.new attendee: user
       if attendee.save
-        { status: "Success to Join the #{object.name}", errors: [] }
+        { status: "Success to Join the #{group.name}", errors: [] }
       else
         { status: nil, errors: attendee.errors.full_messages }
       end
+
+    rescue ActiveRecord::RecordNotFound => error
+      { status: nil, errors: [error.message] }
     end
 
     def leave
-      attendee = object.attenables.find_by(attendee: user)
+      group = model.find(model_id)
+      attendee = group.attenables.find_by attendee: user
       return { status: nil, errors: ['No record for attendee'] } if attendee.blank?
 
       if attendee.destroy
-        { status: "Success to Leave the #{object.name}", errors: [] }
+        { status: "Success to Leave the #{group.name}", errors: [] }
       else
         { status: nil, errors: attendee.errors.full_messages }
       end
+
+    rescue ActiveRecord::RecordNotFound => error
+      { status: nil, errors: [error.message] }
     end
 
   private

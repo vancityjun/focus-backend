@@ -5,8 +5,9 @@ module Resolvers
     description 'Fetch the public groups'
     argument :id, String, required: false, default_value: ''
     argument :range, String, required: false, default_value: ''
-    def resolve(id:, range:)
-      options = set_options params: { id: id, range: range }
+
+    def resolve(**kwargs)
+      options = set_options params: kwargs
       BaseService.call(:group, :fetch, options)
     end
   end

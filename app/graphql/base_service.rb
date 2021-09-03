@@ -1,10 +1,16 @@
 class BaseService
 
-  attr_accessor :params, :object, :user
+  attr_accessor :params, :model_id, :user
 
-  def initialize(params: {}, object: nil, object_id: nil, user: nil)
+  # def initialize(params: {}, object: nil, object_id: nil, user: nil)
+  #   @params = params.to_h.symbolize_keys
+  #   @object = object || model.find_by(id: object_id)
+  #   @user = user
+  # end
+
+  def initialize(params: {}, model_id: nil, user: nil)
     @params = params.to_h.symbolize_keys
-    @object = object || model.find_by(id: object_id)
+    @model_id = model_id
     @user = user
   end
 
@@ -13,7 +19,7 @@ class BaseService
     service.constantize.new(
       params: options[:params],
       user: options[:current_user],
-      object_id: options[:params][:id]
+      model_id: options[:params][:id]
     ).send(method)
   end
 

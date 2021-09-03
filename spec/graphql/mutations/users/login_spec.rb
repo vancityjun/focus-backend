@@ -4,8 +4,10 @@ RSpec.describe Mutations::Users::Login, type: :request do
   let!(:user) { create :user }
   let!(:variables) do
     {
-      email: 'jun@example.com',
-      password: '12345678'
+      input: {
+        email: 'jun@example.com',
+        password: '12345678'
+      }
     }
   end
 
@@ -20,10 +22,11 @@ RSpec.describe Mutations::Users::Login, type: :request do
     GQL
   end
 
-  describe 'login' do
+  describe 'User Login' do
     it 'with valid login info' do
-      response = execute_and_parse_graphql_response query: login_query, variables: variables
-      expect(response['login']).to match(
+      execute_and_parse_graphql_response query: login_query, variables: variables
+
+      expect(parse_graphql_response['login']).to match(
         token: kind_of(String),
         errors: []
       )
@@ -31,16 +34,20 @@ RSpec.describe Mutations::Users::Login, type: :request do
 
     context 'with invalid login info' do
       it 'with invalid email' do
-        response = execute_and_parse_graphql_response query: login_query, variables: variables.merge(email: 'invalid@example.com')
-        expect(response['login']).to match(
+        invalid_variables = variables.deep_merge(input: { email: 'invalid@example.com' })
+
+        response = execute_and_parse_graphql_response query: login_query, variables: invalid_variables
+        expect(parse_graphql_response['login']).to match(
           token: nil,
           errors: ['Invalid email or password.']
         )
       end
 
       it 'with invalid password' do
-        response = execute_and_parse_graphql_response query: login_query, variables: variables.merge(password: '87654321')
-        expect(response['login']).to match(
+        invalid_variables = variables.deep_merge(input: { password: '87654321' })
+
+        response = execute_and_parse_graphql_response query: login_query, variables: invalid_variables
+        expect(parse_graphql_response['login']).to match(
           token: nil,
           errors: ['Invalid email or password.']
         )

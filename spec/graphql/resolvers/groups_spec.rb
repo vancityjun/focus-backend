@@ -10,11 +10,10 @@ RSpec.describe Resolvers::Groups, type: :request do
   let!(:attendee) { create :user, :attendee }
   let!(:attenable_1) { create :attendee, attendee: attendee, resource: public_group_1 }
   let!(:attenable_2) { create :attendee, attendee: attendee, resource: private_group }
-  let!(:token) { generate_jwt_test_token(attendee) }
 
   let!(:query) do
     <<-GQL
-      query($id: String!, $range: String!){
+      query($id: String, $range: String){
         groups (id: $id, range: $range){
           id,
           name,
@@ -34,19 +33,9 @@ RSpec.describe Resolvers::Groups, type: :request do
 
   describe 'range is empty' do
     context 'without specific id' do
-      let!(:variables) do
-        {
-          id: '',
-          range: ''
-        }
-      end
-
       it 'fetches all active public groups' do
-        post '/graphql', params: { query: query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
-        expect(response.status).to eq(200)
-
-        parsed_response = parse_response response.body
-        expect(parsed_response['groups']).to match_array([
+        execute_and_parse_graphql_response query: query, current_user: attendee
+        expect(parse_graphql_response['groups']).to match_array([
           a_response_group(public_group_1),
           a_response_group(public_group_2),
         ])
@@ -56,19 +45,28 @@ RSpec.describe Resolvers::Groups, type: :request do
     context 'with specific id' do
       let!(:variables) do
         {
-          id: public_group_1.id.to_s,
-          range: ''
+          id: public_group_1.id.to_s
         }
       end
 
       it 'fetches speific group in public' do
-        post '/graphql', params: { query: query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
-        expect(response.status).to eq(200)
-
-        parsed_response = parse_response response.body
-        expect(parsed_response['groups']).to match_array([
+        execute_and_parse_graphql_response query: query, variables: variables, current_user: attendee
+        expect(parse_graphql_response['groups']).to match_array([
           a_response_group(public_group_1),
         ])
+      end
+    end
+
+    context 'with invalid id' do
+      let!(:variables) do
+        {
+          id: '0'
+        }
+      end
+
+      it 'returns empty array' do
+        execute_and_parse_graphql_response query: query, variables: variables, current_user: attendee
+        expect(parse_graphql_response['groups']).to eq []
       end
     end
   end
@@ -77,17 +75,13 @@ RSpec.describe Resolvers::Groups, type: :request do
     context 'without specific id' do
       let!(:variables) do
         {
-          id: '',
           range: 'attended'
         }
       end
 
       it 'fetches all attended groups' do
-        post '/graphql', params: { query: query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
-        expect(response.status).to eq(200)
-
-        parsed_response = parse_response response.body
-        expect(parsed_response['groups']).to match_array([
+        execute_and_parse_graphql_response query: query, variables: variables, current_user: attendee
+        expect(parse_graphql_response['groups']).to match_array([
           a_response_group(public_group_1),
           a_response_group(private_group),
         ])
@@ -103,14 +97,32 @@ RSpec.describe Resolvers::Groups, type: :request do
       end
 
       it 'fetches speific group in attended' do
-        post '/graphql', params: { query: query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
-        expect(response.status).to eq(200)
-
-        parsed_response = parse_response response.body
-        expect(parsed_response['groups']).to match_array([
+        execute_and_parse_graphql_response query: query, variables: variables, current_user: attendee
+        expect(parse_graphql_response['groups']).to match_array([
           a_response_group(private_group),
         ])
       end
+    end
+
+    context 'with specific id' do
+      let!(:variables) do
+        {
+          id: '0',
+          range: 'attended'
+        }
+      end
+
+      it 'returns empty array' do
+        execute_and_parse_graphql_response query: query, variables: variables, current_user: attendee
+        expect(parse_graphql_response['groups']).to eq []
+      end
+    end
+  end
+
+  describe 'current_user is invalid' do
+    it 'returns errors' do
+      execute_and_parse_graphql_response query: query, current_user: nil
+      expect(parse_graphql_response['errors']).to be_truthy
     end
   end
 

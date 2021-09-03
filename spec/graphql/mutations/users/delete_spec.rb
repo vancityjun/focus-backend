@@ -2,13 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Mutations::Users::Delete, type: :request do
   let!(:user) { create :user }
-  let!(:token) { generate_jwt_test_token(user) }
   let!(:previous_user_attr) { user }
   
   let!(:variables) do
     {
       input: {
-        id: user.id
+        id: user.id.to_s
       }
     }
   end
@@ -24,47 +23,68 @@ RSpec.describe Mutations::Users::Delete, type: :request do
     GQL
   end
 
-  describe 'with valid variables' do
-    freeze_time! { Time.zone.parse('2021-08-17 09:00') }
+  describe 'User Delete' do
+    context 'with valid id' do
+      freeze_time! { Time.zone.parse('2021-08-17 09:00') }
 
-    it 'archive user' do
-      expect do
-        post '/graphql', params: { query: delete_user_query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
-      end.
-        to change(User, :count).by(0)
+      it 'archives user' do
+        expect do
+          execute_and_parse_graphql_response query: delete_user_query, variables: variables, current_user: user
+        end.
+          to change(User, :count).by(0).
+          and change { user.reload.archived }.from(nil).to(true).
+          and change { user.archived_at }.from(nil).to(now)
 
-      expect(response.status).to eq(200)
-
-      parsed_response = parse_response response.body
-      expect(parsed_response['deleteUser']).to match(
-        status: 'Success to Delete User',
-        errors: []
-      )
-
-      expect(user.reload).to have_attributes(
-        archived: true,
-        archived_at: now
-      )
-    end
-  end
-
-  describe 'with invalid variables' do
-    it 'returns errors when token does not existed' do
-      post '/graphql', params: { query: delete_user_query, variables: variables }
-      parsed_response = parse_response response.body
-      expect(parsed_response['deleteUser']).to match(
-        status: nil,
-        errors: ['Invalid user']
-      )
+        expect(parse_graphql_response['deleteUser']).to match(
+          status: 'Success to Delete User',
+          errors: []
+        )
+      end
     end
 
-    it 'returns errors when token is invalid' do
-      post '/graphql', params: { query: delete_user_query, variables: variables }, headers: { 'Authorization' => "Bearer Invalid" }
-      parsed_response = parse_response response.body
-      expect(parsed_response['deleteUser']).to match(
-        status: nil,
-        errors: ['Invalid user']
-      )
+    context 'with invalid variables' do
+      context 'type miss matched' do
+        it 'returns graphql errors' do
+          invalid_variables = variables.deep_merge(input: { id: user.id })
+
+          expect do
+            execute_and_parse_graphql_response query: delete_user_query, variables: invalid_variables, current_user: user
+          end.
+            to change(User, :count).by(0)
+
+          expect(parse_graphql_response['errors']).to be_truthy
+        end
+      end
+    end
+
+    context 'with invalid current_user' do
+      it 'returns error for invalid user' do
+        expect do
+          execute_and_parse_graphql_response query: delete_user_query, variables: variables, current_user: nil
+        end.
+          to change(User, :count).by(0)
+
+        expect(parse_graphql_response['deleteUser']).to match(
+          status: nil,
+          errors: ['Invalid user']
+        )
+      end
+    end
+
+    context 'with invalid id' do
+      it 'returns error for none existed record' do
+        invalid_variables = variables.deep_merge(input: { id: 'invalid' })
+
+        expect do
+          execute_and_parse_graphql_response query: delete_user_query, variables: invalid_variables, current_user: user
+        end.
+          to change(User, :count).by(0)
+
+        expect(parse_graphql_response['deleteUser']).to match(
+          status: nil,
+          errors: ["Couldn't find User with 'id'=invalid"]
+        )
+      end
     end
   end
 end
