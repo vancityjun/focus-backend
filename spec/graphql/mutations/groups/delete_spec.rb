@@ -72,7 +72,7 @@ RSpec.describe Mutations::Groups::Delete, type: :request do
 
         expect(parse_graphql_response['deleteGroup']).to match(
           status: nil,
-          errors: ['Invalid user']
+          errors: ["Invalid user"]
         )
       end
     end
@@ -89,7 +89,24 @@ RSpec.describe Mutations::Groups::Delete, type: :request do
 
         expect(parse_graphql_response['deleteGroup']).to match(
           status: nil,
-          errors: ["Couldn't find Group with 'id'=invalid"]
+          errors: ["Couldn't find Group with 'id'=invalid [WHERE (users.archived IS NULL OR users.archived IS false)]"]
+        )
+      end
+    end
+
+    context 'if group owner is not current_user' do
+      let!(:attendee) { create :user, :attendee }
+      let!(:permission) { create :permission, user: attendee, group: group, created_by_user: user }
+
+      it 'returns error for permission' do
+        expect do
+          execute_and_parse_graphql_response query: delete_group_query, variables: variables, current_user: attendee
+        end.
+          to change(Group, :count).by(0)
+
+        expect(parse_graphql_response['deleteGroup']).to match(
+          status: nil,
+          errors: ["User Does not have permission."]
         )
       end
     end

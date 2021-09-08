@@ -6,6 +6,7 @@ RSpec.describe User, type: :model do
     it { is_expected.to have_many(:groups).with_foreign_key(:owner_id) }
     it { is_expected.to have_many(:attenables).class_name('Attendee').with_foreign_key(:attendee_id) }
     it { is_expected.to have_many(:attended_groups).through(:attenables) }
+    it { is_expected.to have_many(:permissions) }
   end
 
   describe 'validations' do

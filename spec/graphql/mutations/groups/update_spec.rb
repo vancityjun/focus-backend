@@ -137,7 +137,56 @@ RSpec.describe Mutations::Groups::Update, type: :request do
 
         expect(parse_graphql_response['updateGroup']).to match(
           group: nil,
-          errors: ["Couldn't find Group with 'id'=invalid"]
+          errors: ["Couldn't find Group with 'id'=invalid [WHERE (users.archived IS NULL OR users.archived IS false)]"]
+        )
+      end
+    end
+
+    context 'if current_user does not have permission' do
+      let!(:attendee) { create :user, :attendee }
+
+      it 'returns error for permission' do
+        expect do
+          execute_and_parse_graphql_response query: update_group_query, variables: variables, current_user: attendee
+        end.
+          to change(Group, :count).by(0)
+
+        expect(parse_graphql_response['updateGroup']).to match(
+          group: nil,
+          errors: ["User Does not have permission."]
+        )
+      end
+    end
+
+    context 'if current_user has permission' do
+      let!(:attendee) { create :user, :attendee }
+      let!(:attenable) { create :attendee, attendee: attendee, resource: group }
+      let!(:permission) { create :permission, user: attendee, group: group, created_by_user: user }
+      
+      it 'returns error for permission' do
+        expect do
+          execute_and_parse_graphql_response query: update_group_query, variables: variables, current_user: attendee
+        end.
+          to change(user.groups, :count).by(0).
+          and change(Attendee, :count).by(0).
+          and change { group.reload.name }.from(previous_group_attr.name).to(variables[:input][:groupAttributes][:name]).
+          and change { group.description }.from(previous_group_attr.description).to(variables[:input][:groupAttributes][:description]).
+          and change { group.slots }.from(previous_group_attr.slots).to(variables[:input][:groupAttributes][:slots])
+
+        expect(parse_graphql_response['updateGroup']['group']).to match(
+          {
+            id: group.id.to_s,
+            name: variables[:input][:groupAttributes][:name],
+            description: variables[:input][:groupAttributes][:description],
+            slots: variables[:input][:groupAttributes][:slots],
+            country: variables[:input][:groupAttributes][:country],
+            region: variables[:input][:groupAttributes][:region],
+            city: variables[:input][:groupAttributes][:city],
+            streetAddress: variables[:input][:groupAttributes][:streetAddress],
+            postCode: variables[:input][:groupAttributes][:postCode],
+            private: variables[:input][:groupAttributes][:private],
+            attend: true
+          }.with_indifferent_access
         )
       end
     end

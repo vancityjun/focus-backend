@@ -6,6 +6,10 @@ module Types
     field :update_user, mutation: Mutations::Users::Update
     field :delete_user, mutation: Mutations::Users::Delete
 
+    # Permission
+    field :add_permission, mutation: Mutations::Permissions::Create
+    field :delete_permission, mutation: Mutations::Permissions::Delete
+
     # Group
     field :create_group, mutation: Mutations::Groups::Create
     field :update_group, mutation: Mutations::Groups::Update

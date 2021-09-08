@@ -83,7 +83,7 @@ RSpec.describe Mutations::Groups::Join, type: :request do
 
           expect(parse_graphql_response['joinGroup']).to match(
             status: nil,
-            errors: ["Couldn't find Group with 'id'=invalid"]
+            errors: ["Couldn't find Group with 'id'=invalid [WHERE (users.archived IS NULL OR users.archived IS false)]"]
           )
         end
       end

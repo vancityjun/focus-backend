@@ -20,24 +20,24 @@ module Services
 
     def update
       group = model.find(model_id)
+      group.manage_by_user = user
       if group.update params
         { group: group, errors: [] }
       else
         { group: nil, errors: group.errors.full_messages }
       end
-
     rescue ActiveRecord::RecordNotFound => error
       { group: nil, errors: [error.message] }
     end
 
     def delete
       group = model.find(model_id)
+      group.manage_by_user = user
       if group.archive
         { status: "Success to Delete Group", errors: [] }
       else
         { status: nil, errors: group.errors.full_messages }
       end
-
     rescue ActiveRecord::RecordNotFound => error
       { status: nil, errors: [error.message] }
     end
@@ -50,7 +50,6 @@ module Services
       else
         { status: nil, errors: attendee.errors.full_messages }
       end
-
     rescue ActiveRecord::RecordNotFound => error
       { status: nil, errors: [error.message] }
     end
@@ -65,7 +64,6 @@ module Services
       else
         { status: nil, errors: attendee.errors.full_messages }
       end
-
     rescue ActiveRecord::RecordNotFound => error
       { status: nil, errors: [error.message] }
     end
