@@ -8,6 +8,7 @@ RSpec.describe Group, type: :model do
     it { is_expected.to belong_to(:owner).class_name('User')}
     it { is_expected.to have_many(:attenables).class_name('Attendee') }
     it { is_expected.to have_many(:attendees).through(:attenables) }
+    it { is_expected.to have_many(:permissions) }
   end
 
   describe 'validations' do
