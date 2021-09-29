@@ -9,8 +9,8 @@ RSpec.describe Mutations::Users::Update, type: :request do
     {
       input: {
         id: user.id,
+        email: 'vince@example.com',
         userAttributes: {
-          email: 'vince@example.com',
           firstName: 'Vince',
           lastName: 'Yoon',
           gender: 'male',
@@ -29,8 +29,8 @@ RSpec.describe Mutations::Users::Update, type: :request do
           user {
             id,
             fullName,
+            email,
             userAttributes{
-              email,
               firstName,
               lastName,
               gender,
@@ -50,7 +50,7 @@ RSpec.describe Mutations::Users::Update, type: :request do
       expect do
         post '/graphql', params: { query: update_user_query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }
       end.
-        to change { user.reload.email }.from(previous_user_attr.email).to(variables[:input][:userAttributes][:email]).
+        to change { user.reload.email }.from(previous_user_attr.email).to(variables[:input][:email]).
         and change { user.first_name }.from(previous_user_attr.first_name).to(variables[:input][:userAttributes][:firstName]).
         and change { user.last_name }.from(previous_user_attr.last_name).to(variables[:input][:userAttributes][:lastName])
 
@@ -60,8 +60,8 @@ RSpec.describe Mutations::Users::Update, type: :request do
       expect(parsed_response['updateUser']['user']).to match(
         {
           id: user.id.to_s,
+          email: variables[:input][:email],
           userAttributes: {
-            email: variables[:input][:userAttributes][:email],
             firstName: variables[:input][:userAttributes][:firstName],
             lastName: variables[:input][:userAttributes][:lastName],
             gender: variables[:input][:userAttributes][:gender],
@@ -79,6 +79,7 @@ RSpec.describe Mutations::Users::Update, type: :request do
         input: {
           id: user.id,
           password: '87654321',
+          email: user.email
         }
       }
       post '/graphql', params: { query: update_user_query, variables: variables }, headers: { 'Authorization' => "Bearer #{token}" }

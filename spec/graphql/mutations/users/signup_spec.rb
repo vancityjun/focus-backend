@@ -4,8 +4,8 @@ RSpec.describe Mutations::Users::Signup, type: :request do
   let!(:variables) do
     {
       password: '123456789',
+      email: 'vince@example.com',
       userAttributes: {
-        email: 'vince@example.com',
         firstName: 'Vince',
         lastName: 'Yoon',
         gender: 'male',
@@ -38,7 +38,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
       expect(User.count).to eq 1
       user = User.last
       expect(user).to have_attributes(
-        email: variables[:userAttributes][:email],
+        email: variables[:email],
         first_name: variables[:userAttributes][:firstName],
         last_name: variables[:userAttributes][:lastName],
         gender: variables[:userAttributes][:gender],
