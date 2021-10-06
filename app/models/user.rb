@@ -5,7 +5,8 @@ class User < ApplicationRecord
   
   has_many :groups, foreign_key: :owner_id
   has_many :attenables, class_name: 'Attendee', foreign_key: :attendee_id
-  has_many :attended_groups, through: :attenables, source: :resource, source_type: 'Group' 
+  has_many :attended_groups, through: :attenables, source: :resource, source_type: 'Group'
+  has_many :permissions
 
   validates_presence_of :email, :first_name, :last_name
   validates_presence_of :password, if: :password_required?
@@ -16,7 +17,7 @@ class User < ApplicationRecord
   validates :password, confirmation: true , if: -> { new_record? || changes[:crypted_password] }
 
   before_save :lowercase_email, if: :email =~ /[A-Z]/
-  after_archive :destroy_attenables
+  after_archive :destroy_associations
 
   def full_name
     "#{first_name} #{last_name}"
@@ -38,11 +39,20 @@ private
     !persisted? || !password.nil?
   end
 
-  def destroy_attenables
+  def associations_for_destroy
+    [
+      attenables,
+      permissions,
+    ]
+  end
+
+  def destroy_associations
     return if archived == false
     
-    attenables.each do |attenable|
-      attenable.destroy!
+    associations_for_destroy.each do |collection|
+      collection.each do |model|
+        model.destroy!
+      end
     end
   end
 end

@@ -16,7 +16,7 @@ FactoryBot.define do
     end
 
     trait :attendee do
-      email { 'attendee@example.com' }
+      sequence(:email) { |n| "attendee#{n}@example.com"}
       last_name { 'Focus' }
       first_name { 'Attendee' }
     end
