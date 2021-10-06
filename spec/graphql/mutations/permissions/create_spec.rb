@@ -92,7 +92,7 @@ RSpec.describe Mutations::Permissions::Create, type: :request do
       end
     end
 
-    context 'alread had permission' do
+    context 'already had permission' do
       it 'returns error for already added' do
         create :permission, user: attendee, group: group, created_by_user: owner
 
