@@ -7,8 +7,8 @@ RSpec.describe Resolvers::CurrentUser, type: :request do
       query {
         currentUser{
           id
+          email
           userAttributes{
-            email
             firstName
             lastName
             gender
@@ -28,8 +28,8 @@ RSpec.describe Resolvers::CurrentUser, type: :request do
       expect(parse_graphql_response['currentUser']).to match(
         {
           id: user.id.to_s,
+          email: user.email,
           userAttributes: {
-            email: user.email,
             firstName: user.first_name,
             lastName: user.last_name,
             gender: user.gender,

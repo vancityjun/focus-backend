@@ -8,8 +8,8 @@ RSpec.describe Mutations::Users::Update, type: :request do
     {
       input: {
         id: user.id.to_s,
+        email: 'vince@example.com',
         userAttributes: {
-          email: 'vince@example.com',
           firstName: 'Vince',
           lastName: 'Yoon',
           gender: 'male',
@@ -28,8 +28,8 @@ RSpec.describe Mutations::Users::Update, type: :request do
           user {
             id,
             fullName,
+            email,
             userAttributes{
-              email,
               firstName,
               lastName,
               gender,
@@ -51,7 +51,7 @@ RSpec.describe Mutations::Users::Update, type: :request do
           execute_and_parse_graphql_response query: update_user_query, variables: variables, current_user: user
         end.
           to change(User, :count).by(0).
-          and change { user.reload.email }.from(previous_user_attr.email).to(variables[:input][:userAttributes][:email]).
+          and change { user.reload.email }.from(previous_user_attr.email).to(variables[:input][:email]).
           and change { user.first_name }.from(previous_user_attr.first_name).to(variables[:input][:userAttributes][:firstName]).
           and change { user.last_name }.from(previous_user_attr.last_name).to(variables[:input][:userAttributes][:lastName])
 
@@ -60,7 +60,7 @@ RSpec.describe Mutations::Users::Update, type: :request do
           {
             id: user.id.to_s,
             userAttributes: {
-              email: variables[:input][:userAttributes][:email],
+              email: variables[:input][:email],
               firstName: variables[:input][:userAttributes][:firstName],
               lastName: variables[:input][:userAttributes][:lastName],
               gender: variables[:input][:userAttributes][:gender],

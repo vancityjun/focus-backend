@@ -3,17 +3,15 @@ require 'rails_helper'
 RSpec.describe Mutations::Users::Signup, type: :request do
   let!(:variables) do
     {
-      input: {
-        password: '123456789',
-        userAttributes: {
-          email: 'vince@example.com',
-          firstName: 'Vince',
-          lastName: 'Yoon',
-          gender: 'male',
-          country: 'Canada',
-          city: 'Vancouver',
-          region: 'West'
-        }
+      password: '123456789',
+      email: 'vince@example.com',
+      userAttributes: {
+        firstName: 'Vince',
+        lastName: 'Yoon',
+        gender: 'male',
+        country: 'Canada',
+        city: 'Vancouver',
+        region: 'West'
       }
     }
   end
@@ -44,7 +42,7 @@ RSpec.describe Mutations::Users::Signup, type: :request do
 
         user = User.last
         expect(user).to have_attributes(
-          email: variables[:input][:userAttributes][:email],
+          email: variables[:input][:email],
           first_name: variables[:input][:userAttributes][:firstName],
           last_name: variables[:input][:userAttributes][:lastName],
           gender: variables[:input][:userAttributes][:gender],
